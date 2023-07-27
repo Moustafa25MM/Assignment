@@ -17,7 +17,7 @@ const userLogin = async (req: Request, res: Response) => {
   else {
     // send user a token
     const token = authMethods.generateJWT({ id: userDataFromDB.id });
-    res.status(200).json({ token });
+    res.status(200).json({ token, email, role: userDataFromDB.role });
   }
 };
 

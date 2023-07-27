@@ -15,7 +15,7 @@ Promise<boolean> => {
 };
 
 type IokenPayload = {
-  id: string
+  id: string,
 };
 
 const generateJWT = (payload: IokenPayload):String => jwt.sign(payload, JWTSecret as string, { expiresIn: '7d' });

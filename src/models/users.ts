@@ -35,6 +35,8 @@ const userSchema = new Schema<UserType>(
       required: true,
       minLength: 3,
       maxLength: 50,
+      default: 'regular',
+      enum: ['regular', 'manager', 'admin'],
     },
   },
   {
