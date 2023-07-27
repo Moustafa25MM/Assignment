@@ -15,18 +15,14 @@ const userLogin = async (req: Request, res: Response) => {
 
   const userDataFromDB: any = await userControllers.getUser(email);
 
-  // Email or password dosnt match!, try again
-  if (!userDataFromDB) {
-    res.status(401).json('error1');
-  }
+  if (!userDataFromDB) throw new Error('5');
+
   // compare user input data with db data
   const compare = await authMethods.comparePasswd(password, userDataFromDB.password);
-  if (!compare) res.status(401).json('error2');
-  else {
-    // send user a token
-    const token = authMethods.generateJWT({ id: userDataFromDB.id });
-    res.status(200).json({ token, email, role: userDataFromDB.role });
-  }
+  if (!compare) throw new Error('2');
+  // send user a token
+  const token = authMethods.generateJWT({ id: userDataFromDB.id });
+  res.status(200).json({ token, email, role: userDataFromDB.role });
 };
 
 // Middleware to check if the user is a regular user
