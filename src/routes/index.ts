@@ -21,6 +21,6 @@ const isManagerMiddleware = (req: Request, res: Response, next: NextFunction) =>
 router.use(authMethods.userAuth);
 router.use(isManagerMiddleware);
 router.use(isAdminMiddleware);
-router.use('/users', userRoute);
+router.use('/users', errorHandling(userRoute));
 
 export const indexRouter:Router = router;

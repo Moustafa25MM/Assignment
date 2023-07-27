@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import { indexRouter } from './routes';
-import { errorFunction } from './middlewares/errorFunction';
+import { errorFunction, errorHandling } from './middlewares/errorFunction';
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ const app: Express = express();
 app.use(express.json());
 app.use(morgan('tiny'));
 
-app.use(indexRouter);
+app.use(errorHandling(indexRouter));
 app.use(errorFunction);
 
 const port = process.env.PORT;
