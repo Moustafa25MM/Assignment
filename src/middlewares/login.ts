@@ -1,6 +1,14 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { authMethods } from './auth';
 import { userControllers } from '../controllers/users';
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    role: string;
+  };
+}
 
 const userLogin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -21,6 +29,36 @@ const userLogin = async (req: Request, res: Response) => {
   }
 };
 
+// Middleware to check if the user is a regular user
+const isRegularUser = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const userRole = req.user?.role;
+  if (userRole === 'regular') {
+    return next();
+  }
+  return res.status(403).json({ error: 'Unauthorized access' });
+};
+
+// Middleware to check if the user is a manager
+const isManager = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const userRole = req.user?.role;
+  if (userRole === 'manager') {
+    return next();
+  }
+  return res.status(403).json({ error: 'Unauthorized access' });
+};
+
+// Middleware to check if the user is an admin
+const isAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const userRole = req.user?.role;
+  if (userRole === 'admin') {
+    return next();
+  }
+  return res.status(403).json({ error: 'Unauthorized access' });
+};
+
 export const loginMethods = {
   userLogin,
+  isRegularUser,
+  isManager,
+  isAdmin,
 };

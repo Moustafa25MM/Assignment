@@ -20,7 +20,13 @@ const createUsers = async (req: Request, res: Response) : Promise<Response> => {
   if (!user) throw new Error('Error: user is not created');
   return res.status(200).json(user);
 };
+const getAllUsersFunc = async (req: Request, res: Response): Promise<Response> => {
+  const users = await userControllers.getAllUsers();
+
+  return res.status(200).json(users);
+};
 
 export const userMiddelwares = {
   createUsers,
+  getAllUsersFunc,
 };

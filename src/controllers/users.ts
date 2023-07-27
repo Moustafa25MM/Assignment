@@ -7,7 +7,10 @@ const getUser = (email:string) => {
   return user;
 };
 
+const getAllUsers = () => models.User.find().exec();
+
 export const userControllers = {
   createUser,
   getUser,
+  getAllUsers,
 };
