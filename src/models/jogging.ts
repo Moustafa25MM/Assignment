@@ -3,17 +3,16 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 interface JoggingType {
-  date: string;
+  date: Date;
   distance: Number;
-  time: string;
+  time: Number;
 }
 
 const joggingSchema = new Schema<JoggingType>(
   {
     date: {
-      type: String,
+      type: Date,
       required: true,
-      maxLength: 100,
     },
     distance: {
       type: Number,
@@ -21,9 +20,8 @@ const joggingSchema = new Schema<JoggingType>(
       maxLength: 70,
     },
     time: {
-      type: String,
+      type: Number,
       required: true,
-      maxLength: 100,
     },
   },
 );
