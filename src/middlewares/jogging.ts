@@ -29,35 +29,23 @@ export const createJoggingMiddleware = async (req: any, res: any, next: NextFunc
 
 export const getJoggingsMiddleware = async (req: any, res: any, next: NextFunction): Promise<void> => {
   try {
-    const { id } = req.query;
+    let query = {};
 
-    if (id) {
-      const jogging = await Jogging.findById(id);
+    if (req.user.role === 'regular') {
+      query = { createdBy: req.user.id };
+    }
 
-      if (!jogging) {
-        return res.status(404).send({ message: 'Jogging info not found!' });
-      }
+    const joggings = await Jogging.find(query).sort({ date: -1 });
 
-      if (req.user.role === 'regular' && jogging.createdBy.toString() !== req.user.id) {
-        return res.status(403).send({ message: 'Unauthorized access' });
-      }
-
-      res.locals.jogging = jogging;
-    } else {
-      let query = {};
-
-      if (req.user.role === 'regular') {
-        query = { createdBy: req.user.id };
-      }
-
-      const joggings = await Jogging.find(query).sort({ date: -1 });
-
+    if (req.user.role === 'admin') {
       res.locals.joggings = joggings;
+    } else if (req.user.role === 'regular') {
+      res.locals.joggings = joggings.filter((jogging) => jogging.createdBy.toString() === req.user.id);
     }
 
     return next();
   } catch (err) {
-    return res.status(500).send({ message: 'Error while viewing jogging info' });
+    return res.status(500).send({ message: 'Error while retrieving joggings' });
   }
 };
 
@@ -71,18 +59,17 @@ export const updateJoggingMiddleware = async (req: any, res: any, next: NextFunc
       return res.status(404).send({ message: `Cannot update jogging with id ${id}. Jogging not found!` });
     }
 
-    if (req.user.role === 'regular' && jogging.createdBy.toString() !== req.user.id) {
-      return res.status(403).send({ message: 'Unauthorized access' });
+    if (req.user.role === 'admin' || jogging.createdBy.toString() === req.user.id) {
+      const updatedJogging = await Jogging.findByIdAndUpdate(id, req.body, {
+        new: true,
+        useFindAndModify: false,
+      });
+
+      res.locals.jogging = updatedJogging;
+
+      return next();
     }
-
-    const updatedJogging = await Jogging.findByIdAndUpdate(id, req.body, {
-      new: true,
-      useFindAndModify: false,
-    });
-
-    res.locals.jogging = updatedJogging;
-
-    return next();
+    return res.status(403).send({ message: 'Unauthorized access' });
   } catch (err) {
     return res.status(500).send({ message: 'Error updating jogging information' });
   }
@@ -98,16 +85,23 @@ export const deleteJoggingMiddleware = async (req: any, res: any, next: NextFunc
       return res.status(404).send({ message: `Cannot delete jogging with id ${id}. Jogging not found!` });
     }
 
-    if (req.user.role === 'regular' && jogging.createdBy.toString() !== req.user.id) {
-      return res.status(403).send({ message: 'Unauthorized access' });
+    if (req.user.role === 'admin' || jogging.createdBy.toString() === req.user.id) {
+      const deletedJogging = await Jogging.findByIdAndRemove(id);
+
+      console.log('Deleted jogging:', deletedJogging);
+
+      if (!deletedJogging) {
+        return res.status(404).send({ message: `Cannot delete jogging with id ${id}. Jogging not found!` });
+      }
+
+      res.locals.deletedJogging = deletedJogging;
+
+      return next();
     }
 
-    const deletedJogging = await Jogging.findByIdAndRemove(id);
-
-    res.locals.deletedJoggingId = id;
-
-    return next();
+    return res.status(403).send({ message: 'Unauthorized access' });
   } catch (err) {
+    console.log('Error deleting jogging:', err);
     return res.status(500).send({ message: 'Error during the deleting operation' });
   }
 };

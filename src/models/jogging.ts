@@ -24,6 +24,11 @@ const joggingSchema = new Schema<JoggingType>(
       type: Number,
       required: true,
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // reference to the User model
+      required: true,
+    },
   },
 );
 
