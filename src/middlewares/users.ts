@@ -5,11 +5,27 @@ import { userControllers } from '../controllers/users';
 
 dotenv.config();
 
-const createUsers = async (req: Request, res: Response) : Promise<Response> => {
+const createUsers = async (req: Request, res: Response): Promise<Response> => {
   const {
-    name, email, role,
+    name, email,
   } = req.body;
+  let { role } = req.body;
   let { password } = req.body;
+
+  if (!name || !email || !password) {
+    throw new Error('6');
+  }
+  // Check if user with same email already exists
+  const existingUser = await userControllers.getUser(email);
+  if (existingUser) {
+    throw new Error('1');
+  }
+
+  if (!role || role === 'regular') {
+    role = 'regular';
+  } else if (role !== 'manager' && role !== 'admin') {
+    throw new Error('3');
+  }
 
   password = authMethods.hashPassword(password);
 
@@ -17,7 +33,8 @@ const createUsers = async (req: Request, res: Response) : Promise<Response> => {
     name, password, email, role,
   });
 
-  if (!user) throw new Error('1');
+  if (!user) throw new Error('4');
+
   return res.status(200).json(user);
 };
 const getAllUsersFunc = async (req: Request, res: Response): Promise<Response> => {

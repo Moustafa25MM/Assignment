@@ -6,6 +6,7 @@ interface JoggingType {
   date: Date;
   distance: Number;
   time: Number;
+  createdBy: mongoose.Schema.Types.ObjectId;
 }
 
 const joggingSchema = new Schema<JoggingType>(
