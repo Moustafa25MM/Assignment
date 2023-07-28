@@ -21,5 +21,5 @@ jasmine.getEnv().addReporter(
       displayStacktrace: StacktraceOption.NONE,
     },
     customProcessors: [CustomProcessor],
-  })
+  }),
 );

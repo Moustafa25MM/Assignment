@@ -9,7 +9,8 @@
     "start": "node dist/index.js",
     "predev": "npm run build",
     "dev": "concurrently \"npx tsc -w\"  \" nodemon dist/index.js\" ",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "jasmine": "jasmine",
+    "test": "npm run build && npm run jasmine"
   },
   "author": "Moustafa Mahmoud",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "@types/morgan": "^1.9.4",
     "@typescript-eslint/eslint-plugin": "^5.59.9",
     "@typescript-eslint/parser": "^5.59.9",
+    "@types/supertest": "^2.0.12",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "jasmine": "^5.0.1",
@@ -35,8 +37,10 @@
     "concurrently": "^8.2.0",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
+    "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.3",
-    "rimraf": "^5.0.1"
+    "rimraf": "^5.0.1",
+    "supertest": "^6.3.3"
   }
 }
