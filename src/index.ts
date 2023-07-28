@@ -4,6 +4,7 @@ import express, { Express } from 'express';
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 import { indexRouter } from './routes';
 import { errorFunction, errorHandling } from './middlewares/errorFunction';
 
@@ -16,6 +17,7 @@ mongoose
   .catch(() => console.log('DB connection failed'));
 
 export const app : Express = express();
+app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('tiny'));
 

@@ -8,9 +8,11 @@ import { authMethods } from '../middlewares/auth';
 import { errorHandling } from '../middlewares/errorFunction';
 import { joggingRoutes } from './jogging';
 import { validations } from '../middlewares/validations';
+import { logoutoutes } from '../middlewares/logout';
 
 const router = Router();
 
+router.use(logoutoutes.logout.path, logoutoutes.logout.middleware, logoutoutes.logout.handler);
 router.post('/register', validations.checkEmail, errorHandling(userMiddelwares.createUsers));
 router.use('/login', errorHandling(loginMethods.userLogin));
 router.use('/jogging', errorHandling(joggingRoutes));
