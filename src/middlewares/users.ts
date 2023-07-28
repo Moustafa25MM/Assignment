@@ -1,20 +1,24 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
+import { validationResult } from 'express-validator';
 import { authMethods } from './auth';
 import { userControllers } from '../controllers/users';
 
 dotenv.config();
 
 const createUsers = async (req: Request, res: Response): Promise<Response> => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: 'Invalid Data Format' });
+  }
+
   const {
     name, email,
   } = req.body;
   let { role } = req.body;
   let { password } = req.body;
 
-  if (!name || !email || !password) {
-    throw new Error('6');
-  }
   // Check if user with same email already exists
   const existingUser = await userControllers.getUser(email);
   if (existingUser) {

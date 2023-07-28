@@ -3,14 +3,12 @@ import { body } from 'express-validator';
 
 const checkEmail = body('email')
   .isString()
-  .isEmail()
-  .withMessage('Email is not an email')
   .normalizeEmail()
   .trim()
-  .exists({ checkFalsy: true })
+  .notEmpty()
   .withMessage('Email is required')
-  .isLength({ min: 5, max: 255 })
-  .withMessage('Email: must be at least 5 chars long & maximum 255 chars');
+  .matches(/^\S+@\S+\.\S+$/)
+  .withMessage('Invalid email format');
 
 const checkName = body('name')
   .isString()

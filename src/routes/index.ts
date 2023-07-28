@@ -7,10 +7,11 @@ import { userRoute } from './users';
 import { authMethods } from '../middlewares/auth';
 import { errorHandling } from '../middlewares/errorFunction';
 import { joggingRoutes } from './jogging';
+import { validations } from '../middlewares/validations';
 
 const router = Router();
 
-router.post('/register', errorHandling(userMiddelwares.createUsers));
+router.post('/register', validations.checkEmail, errorHandling(userMiddelwares.createUsers));
 router.use('/login', errorHandling(loginMethods.userLogin));
 router.use('/jogging', errorHandling(joggingRoutes));
 const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {

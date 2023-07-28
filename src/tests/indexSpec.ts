@@ -47,7 +47,6 @@ describe('POST /register/', () => {
       .send(user)
       .expect(400);
 
-    expect(response.body.error).toBeDefined();
-    expect(response.body.error).toBe('Invalid user data');
+    expect(response.body.errors).toBe('Invalid Data Format');
   });
 });
