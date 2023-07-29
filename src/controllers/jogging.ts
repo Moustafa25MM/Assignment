@@ -1,6 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-restricted-globals */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 import { Request, Response } from 'express';
+import { ParsedQs } from 'qs';
 import Jogging from '../models/jogging';
 
 export const createJogging = async (req: any, res: any): Promise<Response> => {
@@ -84,8 +87,11 @@ export const deleteJogging = async (req: Request, res: Response): Promise<Respon
   }
 };
 
-export const getJoggingById = async (req: Request, res: Response): Promise<Response> => {
+export const getJoggingById = async (req: any, res: Response): Promise<Response> => {
   try {
+    if (req.user.role !== 'regular' && req.user.role !== 'admin') {
+      return res.status(403).send({ message: 'Unauthorized access' });
+    }
     const { id } = req.params;
 
     const jogging = await Jogging.findById(id).populate({ path: 'createdBy', model: 'user' });
@@ -98,4 +104,27 @@ export const getJoggingById = async (req: Request, res: Response): Promise<Respo
   } catch (err) {
     return res.status(500).send({ message: 'Error while retrieving jogging info' });
   }
+};
+export const filterJoggingsByDate = async (req: Request, res: Response) : Promise<Response> => {
+  const { from } = req.query;
+  const { to } = req.query;
+
+  if (!from || !to) {
+    return res.status(400).send({ message: 'Please provide both "from" and "to" dates.' });
+  }
+
+  const fromDate = typeof from === 'string' ? from : (from as ParsedQs).toString();
+  const toDate = typeof to === 'string' ? to : (to as ParsedQs).toString();
+
+  const dateFormat = /[^-\d]/;
+  if (dateFormat.test(fromDate) || dateFormat.test(toDate)) {
+    return res.status(400).send({ message: 'Invalid date format. Please use ISO 8601 format (e.g. YYYY-MM-DD).' });
+  }
+
+  const filteredJoggings = res.locals.joggings.filter((jogging: { date: string | number | Date; }) => {
+    const joggingDate = new Date(jogging.date);
+    return joggingDate >= new Date(fromDate) && joggingDate <= new Date(toDate);
+  });
+
+  return res.json(filteredJoggings);
 };
