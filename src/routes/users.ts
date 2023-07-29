@@ -8,8 +8,8 @@ import { errorHandling } from '../middlewares/errorFunction';
 
 const router = Router();
 router.post('/', authMethods.userAuth, errorHandling(userMiddelwares.createUserFunc));
-router.put('/:id', authMethods.userAuth, loginMethods.isAdmin, errorHandling(userMiddelwares.updateUserFunc));
-router.delete('/:id', authMethods.userAuth, loginMethods.isAdmin, errorHandling(userMiddelwares.deleteUserFunc));
-router.get('/:id', authMethods.userAuth, loginMethods.isAdmin, errorHandling(userMiddelwares.getUserByIdFunc));
-router.get('/', authMethods.userAuth, loginMethods.isAdmin, errorHandling(userMiddelwares.getAllUsersFunc));
+router.put('/:id', authMethods.userAuth, errorHandling(userMiddelwares.updateUserFunc));
+router.delete('/:id', authMethods.userAuth, errorHandling(userMiddelwares.deleteUserFunc));
+router.get('/:id', authMethods.userAuth, errorHandling(userMiddelwares.getUserByIdFunc));
+router.get('/', authMethods.userAuth, errorHandling(userMiddelwares.getAllUsersFunc));
 export const userRoute: Router = router;

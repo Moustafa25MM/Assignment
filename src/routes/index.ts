@@ -14,16 +14,17 @@ const router = Router();
 router.use(logoutoutes.logout.path, logoutoutes.logout.middleware, logoutoutes.logout.handler);
 router.post('/register', validations.checkEmail, errorHandling(authMethods.registerMiddleware));
 router.use('/login', errorHandling(loginMethods.userLogin));
-router.use('/jogging', errorHandling(joggingRoutes));
-const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  loginMethods.isAdmin(req as any, res, next);
-};
-const isManagerMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  loginMethods.isManager(req as any, res, next);
-};
+
 router.use(authMethods.userAuth);
-// router.use(isManagerMiddleware);
-// router.use(isAdminMiddleware);
-router.use('/users', errorHandling(userRoute));
+router.use('/jogging', errorHandling(joggingRoutes));
+
+// const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
+//   loginMethods.isAdmin(req as any, res, next);
+// };
+const isAdminOrManagerMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  loginMethods.isManagerOrAdmin(req as any, res, next);
+};
+
+router.use('/users', authMethods.userAuth, isAdminOrManagerMiddleware, errorHandling(userRoute));
 
 export const indexRouter:Router = router;

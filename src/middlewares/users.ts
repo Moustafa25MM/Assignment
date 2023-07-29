@@ -12,8 +12,7 @@ const createUserFunc = async (req: any, res: Response): Promise<Response> => {
 
   const user = await userControllers.createUser({
     name, email, password, role,
-  }, req.currentUser);
-
+  }, req.user); // pass the currentUser object
   return res.status(201).json(user);
 };
 const updateUserFunc = async (req: any, res: Response): Promise<Response> => {
@@ -24,7 +23,7 @@ const updateUserFunc = async (req: any, res: Response): Promise<Response> => {
 
   const user = await userControllers.updateUser(id, {
     name, email, password, role,
-  }, req.currentUser);
+  }, req.user);
 
   return res.status(200).json(user);
 };
@@ -32,21 +31,21 @@ const updateUserFunc = async (req: any, res: Response): Promise<Response> => {
 const deleteUserFunc = async (req: any, res: Response): Promise<Response> => {
   const { id } = req.params;
 
-  await userControllers.deleteUser(id, req.currentUser);
+  const user = await userControllers.deleteUser(id, req.user);
 
-  return res.status(204).json();
+  return res.status(204).json(user);
 };
 
 const getUserByIdFunc = async (req: any, res: Response): Promise<Response> => {
   const { id } = req.params;
 
-  const user = await userControllers.getUserById(id, req.currentUser);
+  const user = await userControllers.getUserById(id, req.user);
 
   return res.status(200).json(user);
 };
 
 const getAllUsersFunc = async (req: any, res: Response): Promise<Response> => {
-  const users = await userControllers.getAllUsers(req.currentUser);
+  const users = await userControllers.getAllUsers(req.user);
 
   return res.status(200).json(users);
 };

@@ -10,10 +10,8 @@ const registeruser = (data:any) => models.User.create(data);
 
 const createUser = async (data: UserType, currentUser: UserType) => {
   if (currentUser.role !== 'manager' && currentUser.role !== 'admin') {
-    console.log(currentUser.role)
     throw new Error('Unauthorized access');
-}
-console.log(currentUser.role)
+  }
   return models.User.create(data);
 };
 const updateUser = async (id: string, data: UserType, currentUser: UserType) => {
@@ -22,7 +20,7 @@ const updateUser = async (id: string, data: UserType, currentUser: UserType) => 
   }
   const user = await models.User.findByIdAndUpdate(id, data, { new: true });
   if (!user) {
-    throw new Error('User not found');
+    throw new Error('5');
   }
   return user;
 };
@@ -33,7 +31,7 @@ const deleteUser = async (id: string, currentUser: UserType) => {
   }
   const user = await models.User.findByIdAndDelete(id);
   if (!user) {
-    throw new Error('User not found');
+    throw new Error('5');
   }
 };
 
@@ -43,7 +41,7 @@ const getUserById = async (id: string, currentUser: UserType) => {
   }
   const user = await models.User.findById(id);
   if (!user) {
-    throw new Error('User not found');
+    throw new Error('5');
   }
   return user;
 };

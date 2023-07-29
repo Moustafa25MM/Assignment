@@ -74,8 +74,6 @@ export const deleteJogging = async (req: Request, res: Response): Promise<Respon
   try {
     const { deletedJogging } = res.locals;
 
-    console.log(`Deleted jogging: ${deletedJogging}`);
-
     if (!deletedJogging) {
       return res.status(404).send({ message: 'Cannot delete jogging. Jogging not found!' });
     }

@@ -34,10 +34,10 @@ const isRegularUser = (req: AuthenticatedRequest, res: Response, next: NextFunct
   return res.status(403).json({ error: 'Unauthorized access' });
 };
 
-// Middleware to check if the user is a manager
-const isManager = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+// Middleware to check if the user is a manager or admin
+const isManagerOrAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const userRole = req.user?.role;
-  if (userRole === 'manager') {
+  if (userRole === 'manager' || userRole === 'admin') {
     return next();
   }
   return res.status(403).json({ error: 'Unauthorized access' });
@@ -55,6 +55,6 @@ const isAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction) =
 export const loginMethods = {
   userLogin,
   isRegularUser,
-  isManager,
+  isManagerOrAdmin,
   isAdmin,
 };

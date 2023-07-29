@@ -88,8 +88,6 @@ export const deleteJoggingMiddleware = async (req: any, res: any, next: NextFunc
     if (req.user.role === 'admin' || jogging.createdBy.toString() === req.user.id) {
       const deletedJogging = await Jogging.findByIdAndRemove(id);
 
-      console.log('Deleted jogging:', deletedJogging);
-
       if (!deletedJogging) {
         return res.status(404).send({ message: `Cannot delete jogging with id ${id}. Jogging not found!` });
       }
@@ -101,7 +99,6 @@ export const deleteJoggingMiddleware = async (req: any, res: any, next: NextFunc
 
     return res.status(403).send({ message: 'Unauthorized access' });
   } catch (err) {
-    console.log('Error deleting jogging:', err);
     return res.status(500).send({ message: 'Error during the deleting operation' });
   }
 };
