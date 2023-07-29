@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable radix */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-globals */
@@ -49,30 +52,27 @@ export const getJoggings = async (req: Request, res: Response): Promise<Response
 
       return res.json(jogging);
     }
+    const filteredJoggings = res.locals.joggings;
 
     const pageSize = req.query.pageSize ? parseInt(req.query.pageSize as string) : 10;
     const pageNumber = req.query.pageNumber ? parseInt(req.query.pageNumber as string) : 1;
+    const totaldocs = filteredJoggings.length;
 
-    const totaldocs = await Jogging.countDocuments();
-
-    const joggings = await Jogging.find({})
-      .sort({ date: -1 })
-      .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize);
+    const paginatedJoggings = filteredJoggings.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
     const pagination = paginationOption(pageSize, pageNumber, totaldocs);
 
     return res.json({
       data: {
         pagination,
-        joggings,
+        joggings: paginatedJoggings,
       },
     });
+    // return res.json(res.locals.joggings);
   } catch (err) {
     return res.status(500).send({ message: 'Error while viewing jogging info' });
   }
 };
-
 export const updateJogging = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { id } = req.params;
@@ -159,4 +159,75 @@ export const filterJoggingsByDate = async (req: Request, res: Response) : Promis
       joggings: paginatedJoggings,
     },
   });
+};
+
+function getWeekOfYear(date: Date): number {
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+function getStartOfWeek(year: number, week: number): Date {
+  const firstDayOfYear = new Date(year, 0, 1);
+  const daysToFirstWeek = (8 - firstDayOfYear.getDay()) % 7 || 7;
+  const startDate = new Date(year, 0, daysToFirstWeek + (7 * (week - 1)));
+  return startDate;
+}
+
+function getEndOfWeek(year: number, week: number): Date {
+  const startDate = getStartOfWeek(year, week);
+  const endDate = new Date(startDate.getTime() + (6 * 86400000));
+  return endDate;
+}
+
+export const getWeeklyReport = async (req: any, res: Response) => {
+  try {
+    const createdBy = req.user.id;
+    const joggings = await Jogging.find({ createdBy });
+    const weeklyData: Record<string, { distance: number, time: number, count: number }> = {};
+    for (const jogging of joggings) {
+      const joggingDate = new Date(jogging.date);
+      const year = joggingDate.getFullYear();
+      const week = getWeekOfYear(joggingDate);
+
+      const key = `${year}-${week}`;
+
+      if (!weeklyData.hasOwnProperty(key)) {
+        weeklyData[key] = { distance: 0, time: 0, count: 0 };
+      }
+
+      weeklyData[key].distance += Number(jogging.distance);
+      weeklyData[key].time += Number(jogging.time);
+      weeklyData[key].count += 1;
+    }
+
+    const weeklyReport = [];
+
+    for (const [key, value] of Object.entries(weeklyData)) {
+      const [year, week] = key.split('-').map(Number);
+
+      const startDate = getStartOfWeek(year, week);
+      const endDate = getEndOfWeek(year, week);
+
+      const { distance } = value;
+      const { time } = value;
+      const { count } = value;
+      const averageSpeed = count > 0 ? distance / time : 0;
+
+      weeklyReport.push({
+        week,
+        year,
+        startDate,
+        endDate,
+        distance,
+        time,
+        count,
+        averageSpeed,
+      });
+    }
+
+    res.json(weeklyReport);
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
 };

@@ -40,13 +40,12 @@ export const getJoggingsMiddleware = async (req: any, res: any, next: NextFuncti
     if (req.user.role === 'regular') {
       query = { createdBy: req.user.id };
     }
-
     const joggings = await Jogging.find(query).sort({ date: -1 });
-
     if (req.user.role === 'admin') {
       res.locals.joggings = joggings;
     } else if (req.user.role === 'regular') {
-      res.locals.joggings = joggings.filter((jogging) => jogging.createdBy.toString() === req.user.id);
+      const filteredJoggings = joggings.filter((jogging) => jogging.createdBy.toString() === req.user.id);
+      res.locals.joggings = filteredJoggings;
     }
 
     return next();

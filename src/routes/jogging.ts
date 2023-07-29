@@ -5,6 +5,7 @@ import {
 import { authMethods } from '../middlewares/auth';
 import {
   createJogging, getJoggings, updateJogging, deleteJogging, getJoggingById, filterJoggingsByDate,
+  getWeeklyReport,
 } from '../controllers/jogging';
 
 const router = Router();
@@ -15,5 +16,6 @@ router.get('/jogging/:id', authMethods.userAuth, getJoggingById);
 router.put('/jogging/:id', authMethods.userAuth, updateJoggingMiddleware, updateJogging);
 router.delete('/jogging/:id', authMethods.userAuth, deleteJoggingMiddleware, deleteJogging);
 router.get('/filter', authMethods.userAuth, getJoggingsMiddleware, filterJoggingsByDate);
+router.get('/weekly-report', authMethods.userAuth, getWeeklyReport);
 
 export const joggingRoutes: Router = router;
