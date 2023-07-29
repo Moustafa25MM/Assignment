@@ -50,7 +50,24 @@ export const getJoggings = async (req: Request, res: Response): Promise<Response
       return res.json(jogging);
     }
 
-    return res.json(res.locals.joggings);
+    const pageSize = req.query.pageSize ? parseInt(req.query.pageSize as string) : 10;
+    const pageNumber = req.query.pageNumber ? parseInt(req.query.pageNumber as string) : 1;
+
+    const totaldocs = await Jogging.countDocuments();
+
+    const joggings = await Jogging.find({})
+      .sort({ date: -1 })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+
+    const pagination = paginationOption(pageSize, pageNumber, totaldocs);
+
+    return res.json({
+      data: {
+        pagination,
+        joggings,
+      },
+    });
   } catch (err) {
     return res.status(500).send({ message: 'Error while viewing jogging info' });
   }
