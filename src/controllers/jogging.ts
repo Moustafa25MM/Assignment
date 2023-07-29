@@ -83,3 +83,19 @@ export const deleteJogging = async (req: Request, res: Response): Promise<Respon
     return res.status(500).send({ message: 'Error during the deleting operation' });
   }
 };
+
+export const getJoggingById = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { id } = req.params;
+
+    const jogging = await Jogging.findById(id).populate({ path: 'createdBy', model: 'user' });
+
+    if (!jogging) {
+      return res.status(404).send({ message: 'Jogging info not found!' });
+    }
+
+    return res.json(jogging);
+  } catch (err) {
+    return res.status(500).send({ message: 'Error while retrieving jogging info' });
+  }
+};

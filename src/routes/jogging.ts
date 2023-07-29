@@ -4,14 +4,14 @@ import {
 } from '../middlewares/jogging';
 import { authMethods } from '../middlewares/auth';
 import {
-  createJogging, getJoggings, updateJogging, deleteJogging,
+  createJogging, getJoggings, updateJogging, deleteJogging, getJoggingById,
 } from '../controllers/jogging';
 
 const router = Router();
 
 router.post('/', authMethods.userAuth, createJoggingMiddleware, createJogging);
 router.get('/joggings', authMethods.userAuth, getJoggingsMiddleware, getJoggings);
-// router.get('/jogging/:id', authMethods.userAuth, getJoggingsMiddleware, getJoggingById);
+router.get('/jogging/:id', authMethods.userAuth, getJoggingById);
 router.put('/jogging/:id', authMethods.userAuth, updateJoggingMiddleware, updateJogging);
 router.delete('/jogging/:id', authMethods.userAuth, deleteJoggingMiddleware, deleteJogging);
 

@@ -4,6 +4,9 @@ import Jogging from '../models/jogging';
 
 export const createJoggingMiddleware = async (req: any, res: any, next: NextFunction): Promise<void> => {
   try {
+    if (req.user.role !== 'regular' && req.user.role !== 'admin') {
+      return res.status(403).send({ message: 'Unauthorized access' });
+    }
     const { date, distance, time } = req.body;
 
     if (!date || !distance || !time) {
@@ -29,6 +32,9 @@ export const createJoggingMiddleware = async (req: any, res: any, next: NextFunc
 
 export const getJoggingsMiddleware = async (req: any, res: any, next: NextFunction): Promise<void> => {
   try {
+    if (req.user.role !== 'regular' && req.user.role !== 'admin') {
+      return res.status(403).send({ message: 'Unauthorized access' });
+    }
     let query = {};
 
     if (req.user.role === 'regular') {
@@ -51,6 +57,9 @@ export const getJoggingsMiddleware = async (req: any, res: any, next: NextFuncti
 
 export const updateJoggingMiddleware = async (req: any, res: any, next: NextFunction): Promise<void> => {
   try {
+    if (req.user.role !== 'regular' && req.user.role !== 'admin') {
+      return res.status(403).send({ message: 'Unauthorized access' });
+    }
     const { id } = req.params;
 
     const jogging = await Jogging.findById(id);
@@ -77,6 +86,9 @@ export const updateJoggingMiddleware = async (req: any, res: any, next: NextFunc
 
 export const deleteJoggingMiddleware = async (req: any, res: any, next: NextFunction): Promise<void> => {
   try {
+    if (req.user.role !== 'regular' && req.user.role !== 'admin') {
+      return res.status(403).send({ message: 'Unauthorized access' });
+    }
     const { id } = req.params;
 
     const jogging = await Jogging.findById(id);
