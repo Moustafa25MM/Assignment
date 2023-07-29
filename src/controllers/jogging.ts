@@ -182,6 +182,16 @@ function getEndOfWeek(year: number, week: number): Date {
 
 export const getWeeklyReport = async (req: any, res: Response) => {
   try {
+    /*
+    The logic for generating the weekly report is as follows:
+        1-Query the Jogging collection for all joggings.
+        2-Loop through each jogging and extract the year, week, distance, and time.
+        4-Calculate the start and end dates of the week from the year and week.
+        5-Group the joggings by year and week and calculate the total distance, time, and count of joggings for each week.
+        6-Calculate the average speed for each week by dividing the total distance by the total time.
+        7-Create an object for each week containing the year, week, start date, end date, distance, time, count, and average speed.
+        8-Add each week's object to an array and return the array as the weekly report.
+    */
     const createdBy = req.user.id;
     const joggings = await Jogging.find({ createdBy });
     const weeklyData: Record<string, { distance: number, time: number, count: number }> = {};

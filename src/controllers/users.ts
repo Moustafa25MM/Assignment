@@ -1,4 +1,5 @@
 import { models } from '../models';
+import Jogging from '../models/jogging';
 
 interface UserType {
   name: string;
@@ -29,10 +30,21 @@ const deleteUser = async (id: string, currentUser: UserType) => {
   if (currentUser.role !== 'manager' && currentUser.role !== 'admin') {
     throw new Error('Unauthorized access');
   }
-  const user = await models.User.findByIdAndDelete(id);
+
+  const user = await models.User.findById(id);
   if (!user) {
     throw new Error('5');
   }
+
+  const joggings = await Jogging.find({ createdBy: id });
+  await Promise.all(joggings.map((jogging) => jogging.deleteOne()));
+
+  const deletedUser = await models.User.findByIdAndDelete(id);
+  if (!deletedUser) {
+    throw new Error('5');
+  }
+
+  return { message: 'User deleted successfully' };
 };
 
 const getUserById = async (id: string, currentUser: UserType) => {
