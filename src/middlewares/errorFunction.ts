@@ -9,7 +9,7 @@ const errorFunction = (err:Error, req: Request, res: Response, next: NextFunctio
 
   if (err.message.substring(0, 6) === 'E11000') {
     // error from mongo (duplicated value)
-    res.status(400).json({ Error: 'Duplicated data!' });
+    res.status(400).json({ Error: 'A user with the same data already exists' });
   } else if (err.message.substring(0, 35) === 'Cannot read properties of undefined') {
     res.status(400).json({ 'Error massage': 'Please enter the required data' });
   } else if (err.message === '1') {

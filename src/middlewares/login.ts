@@ -13,7 +13,7 @@ interface AuthenticatedRequest extends Request {
 const userLogin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const userDataFromDB: any = await userControllers.getUser(email);
+  const userDataFromDB: any = await userControllers.getUserToLogin(email);
 
   if (!userDataFromDB) throw new Error('5');
 

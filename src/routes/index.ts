@@ -1,7 +1,6 @@
 import {
   Router, Request, Response, NextFunction,
 } from 'express';
-import { userMiddelwares } from '../middlewares/users';
 import { loginMethods } from '../middlewares/login';
 import { userRoute } from './users';
 import { authMethods } from '../middlewares/auth';
@@ -13,7 +12,7 @@ import { logoutoutes } from '../middlewares/logout';
 const router = Router();
 
 router.use(logoutoutes.logout.path, logoutoutes.logout.middleware, logoutoutes.logout.handler);
-router.post('/register', validations.checkEmail, errorHandling(userMiddelwares.createUsers));
+router.post('/register', validations.checkEmail, errorHandling(authMethods.registerMiddleware));
 router.use('/login', errorHandling(loginMethods.userLogin));
 router.use('/jogging', errorHandling(joggingRoutes));
 const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -23,8 +22,8 @@ const isManagerMiddleware = (req: Request, res: Response, next: NextFunction) =>
   loginMethods.isManager(req as any, res, next);
 };
 router.use(authMethods.userAuth);
-router.use(isManagerMiddleware);
-router.use(isAdminMiddleware);
+// router.use(isManagerMiddleware);
+// router.use(isAdminMiddleware);
 router.use('/users', errorHandling(userRoute));
 
 export const indexRouter:Router = router;
