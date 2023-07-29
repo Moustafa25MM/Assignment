@@ -14,7 +14,12 @@ const userLogin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   const userDataFromDB: any = await userControllers.getUserToLogin(email);
-
+  if (!email) {
+    throw new Error('7');
+  }
+  if (!password) {
+    throw new Error('8');
+  }
   if (!userDataFromDB) throw new Error('5');
 
   // compare user input data with db data
