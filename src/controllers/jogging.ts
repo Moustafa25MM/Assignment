@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-underscore-dangle */
@@ -5,6 +6,7 @@
 import { Request, Response } from 'express';
 import { ParsedQs } from 'qs';
 import Jogging from '../models/jogging';
+import { paginationOption } from '../libs/paginations';
 
 export const createJogging = async (req: any, res: any): Promise<Response> => {
   try {
@@ -126,5 +128,18 @@ export const filterJoggingsByDate = async (req: Request, res: Response) : Promis
     return joggingDate >= new Date(fromDate) && joggingDate <= new Date(toDate);
   });
 
-  return res.json(filteredJoggings);
+  const pageSize = req.query.pageSize ? parseInt(req.query.pageSize as string) : 10;
+  const pageNumber = req.query.pageNumber ? parseInt(req.query.pageNumber as string) : 1;
+  const totaldocs = filteredJoggings.length;
+
+  const paginatedJoggings = filteredJoggings.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+  const pagination = paginationOption(pageSize, pageNumber, totaldocs);
+
+  return res.json({
+    data: {
+      pagination,
+      joggings: paginatedJoggings,
+    },
+  });
 };
