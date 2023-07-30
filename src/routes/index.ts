@@ -15,7 +15,7 @@ router.use(logoutoutes.logout.path, logoutoutes.logout.middleware, logoutoutes.l
 router.post('/register', validations.checkEmail, errorHandling(authMethods.registerMiddleware));
 router.use('/login', errorHandling(loginMethods.userLogin));
 
-router.use(authMethods.userAuth);
+router.use(errorHandling(authMethods.userAuth));
 router.use('/jogging', errorHandling(joggingRoutes));
 
 // const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {

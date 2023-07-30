@@ -38,7 +38,7 @@ const userAuth = async (req: any, res: any, next: any) => {
   const payload = await verify(authHeader, JWTSecret as string);
   const userData = await models.User.findById(payload.id);
 
-  if (!userData) throw new Error('User not found, please enter valid data');
+  if (!userData) throw new Error('5');
   req.user = { id: userData.id, email: userData.email, role: userData.role };
   return next();
 };

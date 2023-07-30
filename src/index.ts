@@ -7,15 +7,15 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { indexRouter } from './routes';
 import { errorFunction, errorHandling } from './middlewares/errorFunction';
-import logger from './utils/logger';
+import log from './utils/logger';
 
 dotenv.config();
 
 const mongoUrl = process.env.MONGO_URL as string;
 mongoose
   .connect(mongoUrl)
-  .then(() => logger.info('DB connected'))
-  .catch(() => logger.info('DB connection failed'));
+  .then(() => log.info('DB connected'))
+  .catch(() => log.info('DB connection failed'));
 
 export const app : Express = express();
 app.use(cookieParser());
@@ -27,5 +27,5 @@ app.use(errorFunction);
 
 const port = process.env.PORT;
 app.listen(port, () => {
-  logger.info(`The server is running on port " ${port}"`);
+  log.info(`The server is running on port "${port}"`);
 });

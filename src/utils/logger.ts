@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import pino from 'pino';
 
 const logger = pino({
