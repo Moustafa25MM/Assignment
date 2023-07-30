@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/no-use-before-define */
@@ -5,7 +6,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
 import { Request, Response } from 'express';
 import { ParsedQs } from 'qs';
 import Jogging from '../models/jogging';
@@ -14,7 +14,7 @@ import { paginationOption } from '../libs/paginations';
 export const createJogging = async (req: any, res: any): Promise<Response> => {
   try {
     if (res.locals.jogging) {
-      return res.status(201).json(res.locals.jogging); // return the saved jogging from the middleware if it already exists
+      return res.status(201).json(res.locals.jogging);
     }
 
     const { date, distance, time } = req.body;

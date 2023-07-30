@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import { indexRouter } from './routes';
 import { errorFunction, errorHandling } from './middlewares/errorFunction';
 import log from './utils/logger';
+import swaggerDocs from './utils/swagger';
 
 dotenv.config();
 
@@ -28,4 +29,5 @@ app.use(errorFunction);
 const port = process.env.PORT;
 app.listen(port, () => {
   log.info(`The server is running on port "${port}"`);
+  swaggerDocs(app, Number(port));
 });
